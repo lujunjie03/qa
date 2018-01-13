@@ -1,0 +1,17 @@
+.metadata
+node_modules
+classes
+*.log
+.DS_Store
+Thumbs.db
+*.MF
+/build/
+/releases/
+.bak
+/tmp/
+/template/
+/target/
+pom.properties
+target
+releases
+.idea/
