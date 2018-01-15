@@ -139,11 +139,49 @@ body {
 
 .personalMain {
 	background-color: white;
+	&>div {
+		&:active {
+			background-color: #d9d9d9;
+		}
+		&:not(:first-child) {
+			div:last-child {
+				border-top: 1px solid #d9d9d9;
+			}
+		}
+	}
+
+	.personalTitle {
+		font-size: 18px;
+		line-height: 32px;
+		padding: 10px 0;
+	}
 }
 
 .personalLogo {
+	padding: 10px 0;
 	text-align: center;
 	font-size: 24px;
+	line-height: 32px;
+	.question-circle {
+		color: #eb5424;
+	}
+
+	.tag {
+		color: #2db7f5;
+		transform: rotate(-90deg);
+	}
+
+	.wechat {
+		color: #87d068;
+	}
+
+	.star {
+		color: #fa8c16;
+	}
+
+	.eye {
+		color: #108ee9;
+	}
 }
 
 .userName {
@@ -162,8 +200,7 @@ body {
 }
 
 .userInfo {
-	margin-bottom: 10px;
-	border-bottom: 1px solid #bfbfbf;
+	margin: 10px 0;
 	padding-top: 20px;
 	padding-bottom: 10px;
 	background-color: white;

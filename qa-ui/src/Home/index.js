@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Input, List, Modal, message, Spin, Avatar, Icon, Row, Col } from 'antd';
 import request from 'superagent';
+import moment from 'moment';
 
 import QuestionForm from './QuestionForm';
+
+moment.locale('zh-cn');         // zh-cn
 
 const Search = Input.Search;
 const { TextArea } = Input;
@@ -28,7 +31,6 @@ class Home extends Component {
     this.setState({ loading: true });
     request.post('reply/getReply').send({ title: value }).then(res => {
       if (res.body.sucMsg) {
-        console.log(res)
         const { data } = res.body;
         this.setState({ loading: false, data });
       } else {
@@ -68,7 +70,6 @@ class Home extends Component {
   }
 
   renderItem(item) {
-
     const actions = [
       <IconText type="star-o" text="156" />,
       <IconText type="like-o" text="156" />,
@@ -81,7 +82,7 @@ class Home extends Component {
         <div>
           <Avatar src={item.photo} size="small" />
           <div className="autherName" >{item.name}</div>
-          <div className="date" >{`回答于${item.date}`}</div>
+          <div className="date" >{`回答于${moment(item.date).fromNow()}`}</div>
         </div>
         {item.content}
       </List.Item>
