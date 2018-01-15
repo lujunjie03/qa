@@ -1,0 +1,25 @@
+{
+  "name": "qa-ui",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:8888",
+  "dependencies": {
+    "antd": "^3.0.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.17",
+    "superagent": "^3.8.2"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-app-rewired eject"
+  },
+  "devDependencies": {
+    "babel-plugin-import": "^1.6.3",
+    "react-app-rewire-less": "^2.1.0",
+    "react-app-rewired": "^1.4.0"
+  }
+}
