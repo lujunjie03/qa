@@ -16,5 +16,12 @@ router.post('/getQuestion', (req, res, next) => {
 	});
 });
 
+router.post('/getQuestionByUserId', (req, res, next) => {
+	const asker = req.session.user.id;
+	Question.getQuestionByUserId({ ...req.body, asker }, (result) => {
+		res.status(200).json(result);
+	});
+});
+
 
 module.exports = router;

@@ -7,6 +7,11 @@ import NoMatch from '../NoMatch';
 import Footer from '../Footer';
 import Question from '../Question';
 import Personal from '../Personal';
+import MyQuestion from '../MyQuestion';
+import MyReply from '../MyReply';
+import Message from '../Message';
+import Collection from '../Collection';
+import Follow from '../Follow';
 import './index.less';
 
 class App extends Component {
@@ -14,7 +19,12 @@ class App extends Component {
     return (
       <Router>
       	<Switch>
-          <Route exact path="/login" component={Login} />  
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/myQuestion" component={MyQuestion} />
+          <Route exact path="/myReply" component={MyReply} />
+          <Route exact path="/message" component={Message} />
+          <Route exact path="/collection" component={Collection} />
+          <Route exact path="/follow" component={Follow} />
           <Footer>
             <Route exact path="/home" component={Home} />
             <Route exact path="/question" component={Question} />

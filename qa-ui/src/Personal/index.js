@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
-import { Row, Col, Avatar, Icon } from 'antd';
+import { Row, Col, Avatar, Icon, Button } from 'antd';
 
 class Personal extends Component {
+
+	logout() {
+		this.props.history.push('/login');
+	}
+
+	go(url) {
+		const { state } = this.props.location;
+		this.props.history.push(url, state);
+	}
 
   render() {
   	const { name, photo } = this.props.location.state;
@@ -15,11 +24,11 @@ class Personal extends Component {
        			<Avatar src={photo} size="large" />
        		</Col>
        		<Col span={12} >
-       			<span className="userName" >{name + '卢俊杰'}</span>
+       			<span className="userName" >{name}</span>
        		</Col>
        	</Row>
-       	<div className="personalMain" >
-	       	<Row>
+       	<div className="personalMain"  >
+	       	<Row onClick={this.go.bind(this, './myQuestion')} >
 	       		<Col className="personalLogo" span={6}>
 	       			<Icon className="question-circle" type="question-circle" />
 	       		</Col>
@@ -27,7 +36,7 @@ class Personal extends Component {
 	       			<span>{'我的问题'}</span>
 	       		</Col>
 	       	</Row>
-	       	<Row>
+	       	<Row onClick={this.go.bind(this, './myReply')} >
 	       		<Col className="personalLogo" span={6}>
 	       			<Icon className="tag" type="tag" />
 	       		</Col>
@@ -35,7 +44,7 @@ class Personal extends Component {
 	       			<span>{'我的回答'}</span>
 	       		</Col>
 	       	</Row>
-	       	<Row>
+	       	<Row onClick={this.go.bind(this, './message')} >
 	       		<Col className="personalLogo" span={6}>
 	       			<Icon className="wechat" type="wechat" />
 	       		</Col>
@@ -43,7 +52,7 @@ class Personal extends Component {
 	       			<span>{'我的消息'}</span>
 	       		</Col>
 	       	</Row>
-	       	<Row>
+	       	<Row onClick={this.go.bind(this, './collection')} >
 	       		<Col className="personalLogo" span={6}>
 	       			<Icon className="star" type="star" />
 	       		</Col>
@@ -51,7 +60,7 @@ class Personal extends Component {
 	       			<span>{'我的收藏'}</span>
 	       		</Col>
 	       	</Row>
-	       	<Row>
+	       	<Row onClick={this.go.bind(this, './follow')} >
 	       		<Col className="personalLogo" span={6}>
 	       			<Icon className="eye" type="eye" />
 	       		</Col>
@@ -59,7 +68,11 @@ class Personal extends Component {
 	       			<span>{'我的关注'}</span>
 	       		</Col>
 	       	</Row>
+	       	
 	      </div>
+	      <Row className="logout-ctn" >
+       		<Button className="login-btn" type="primary" onClick={this.logout.bind(this)} >退出登录</Button>
+       	</Row>
       </div>
     );
   }

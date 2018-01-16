@@ -17,7 +17,6 @@ class Footer extends Component {
 
   render() {
   	const { pathname } = this.props.location;
-  	console.log(this.props)
     return (
       <div>
       	{ this.props.children}

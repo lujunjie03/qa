@@ -8,7 +8,6 @@ import QuestionForm from './QuestionForm';
 moment.locale('zh-cn');         // zh-cn
 
 const Search = Input.Search;
-const { TextArea } = Input;
 const IconText = ({ type, text }) => (
   <span>
     <Icon type={type} style={{ marginRight: 8 }} />

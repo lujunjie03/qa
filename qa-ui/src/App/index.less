@@ -2,8 +2,16 @@ body {
 	font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
 }
 
+#root {
+	height: 100%;
+	&>div {
+		height: 100%;
+	}
+}
+
 .home {
-	height: 1000px;
+	height: 100%;
+	overflow-y: hidden;
 }
 
 .searchBar {
@@ -17,6 +25,7 @@ body {
 	left:0;
 	z-index: 999;
 	background-color: white;
+	box-shadow: 3px 0 3px 3px #d9d9d9;
 }
 
 .questionTitle {
@@ -33,9 +42,12 @@ body {
 	}
 }
 .indexCtn {
-	margin-top: 52.5px;
+	padding-top: 57px;
+	padding-bottom: 48px;
 	width: 100%;
 	height: 100%;
+	overflow-y: auto;
+	background-color: #e8e8e8;
 }
 
 .listTitle {
@@ -45,8 +57,11 @@ body {
 }
 
 .listItem {
-	margin-left: 20px;
-	margin-right: 20px;
+	background-color: white;
+	padding-left: 20px;
+	padding-right: 20px;
+	margin-top: 7px;
+	border-color: #d9d9d9;
 }
 
 .itemCtn {
@@ -77,10 +92,11 @@ body {
 	left: 0px;
 	bottom: 0px;
 	z-index: 99;
-	border-top: 1px solid #bfbfbf;
+	border-top: 1px solid #d9d9d9;
 	width: 100%;
 	text-align: center;
 	padding-top: 5px;
+	background-color: white;
 }
 .footerBtn {
 	font-size: 22px;
@@ -134,7 +150,8 @@ body {
 }
 
 .personalCtn {
-	background-color: #d9d9d9;
+	height: 100%;
+	background-color: #e8e8e8;
 }
 
 .personalMain {
@@ -204,5 +221,17 @@ body {
 	padding-top: 20px;
 	padding-bottom: 10px;
 	background-color: white;
+}
+
+.logout-ctn {
+	text-align: center;
+	margin-top: 10px;
+	padding: 15px 0;
+	background-color: white;
+}
+
+.back-btn {
+	color: white;
+	font-size: 24px;
 }
 

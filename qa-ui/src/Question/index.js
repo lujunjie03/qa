@@ -21,7 +21,6 @@ class Question extends Component {
     this.setState({ loading: true });
     request.post('question/getQuestion').send({ title: value }).then(res => {
       if (res.body.sucMsg) {
-        console.log(res)
         const { data } = res.body;
         this.setState({ loading: false, data });
       } else {
