@@ -12,6 +12,7 @@ import MyReply from '../MyReply';
 import Message from '../Message';
 import Collection from '../Collection';
 import Follow from '../Follow';
+import QuestionDetail from '../QuestionDetail';
 import './index.less';
 
 class App extends Component {
@@ -25,6 +26,7 @@ class App extends Component {
           <Route exact path="/message" component={Message} />
           <Route exact path="/collection" component={Collection} />
           <Route exact path="/follow" component={Follow} />
+          <Route exact path="/question/:id/:title" component={QuestionDetail} />
           <Footer>
             <Route exact path="/home" component={Home} />
             <Route exact path="/question" component={Question} />

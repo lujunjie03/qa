@@ -23,5 +23,11 @@ router.post('/getQuestionByUserId', (req, res, next) => {
 	});
 });
 
+router.post('/getQuestionById', (req, res, next) => {
+	Question.getQuestionById({ ...req.body }, (result) => {
+		res.status(200).json(result);
+	});
+});
+
 
 module.exports = router;

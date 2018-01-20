@@ -50,6 +50,10 @@ class Question extends Component {
     this.setState({ visible: false });
   }
 
+  goQuestionDetail(item) {
+    this.props.history.push(`/question/${item.id}/${item.title}`);
+  }
+
   renderTitle() {
     return (
       <div className="questionTitle" >
@@ -62,7 +66,7 @@ class Question extends Component {
   renderItem(item) {
 
     return (
-      <List.Item className="listItem" key={item.id} >
+      <List.Item className="listItem" key={item.id} onClick={this.goQuestionDetail.bind(this, item)} >
         <div className="listTitle" >{item.title}</div>
         <div className="itemCtn" >
           <Avatar className="autherPhoto" src={item.photo} size="small" />
