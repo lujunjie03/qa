@@ -15,4 +15,11 @@ router.post('/getReplyByUserId', (req, res, next) => {
 	});
 });
 
+router.post('/addReply', (req, res, next) => {
+	const answer = req.session.user.id;
+	Reply.addReply({ ...req.body, answer }, (result) => {
+		res.status(200).json(result);
+	});
+});
+
 module.exports = router;

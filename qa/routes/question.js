@@ -24,7 +24,8 @@ router.post('/getQuestionByUserId', (req, res, next) => {
 });
 
 router.post('/getQuestionById', (req, res, next) => {
-	Question.getQuestionById({ ...req.body }, (result) => {
+	const user = req.session.user.id;
+	Question.getQuestionById({ ...req.body, user }, (result) => {
 		res.status(200).json(result);
 	});
 });

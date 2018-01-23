@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { message, List, Icon, Spin, Row, Col, Button, Avatar } from 'antd';
+import { message, List, Icon, Spin, Row, Col, Button, Avatar, Modal } from 'antd';
 import request from 'superagent';
+import moment from 'moment';
+
+import ReplyForm from './ReplyForm';
 
 class QuestionDetail extends Component {
 	state = {
@@ -13,7 +16,6 @@ class QuestionDetail extends Component {
   componentWillMount() {
     const { title } = this.props.match.params;
     this.setState({ title });
-    console.log(this.props)
   }
 
 	componentDidMount() {
@@ -35,8 +37,58 @@ class QuestionDetail extends Component {
     });
   }
 
+  onReply(data) {
+    const { id } = this.props.match.params;
+    request.post('/reply/addReply').send({ ...data, question: id }).then(res => {
+      if (res.body.sucMsg) {
+        message.success(res.body.sucMsg);
+        this.onSearch();
+        this.close();
+      } else {
+        message.error(res.body.errMsg);
+      }
+    });
+  }
+
+  followQuestion() {
+    const { id } = this.props.match.params;
+    request.post('/follow/addFollow').send({ question: id }).then(res => {
+      if (res.body.sucMsg) {
+        const { data } = this.state;
+        data.follow = data.follow + 1;
+        data.isFollow = 1;
+        this.setState({ data });
+      } else {
+        message.error(res.body.errMsg);
+      }
+    });
+  }
+
+  cancelFollow() {
+    const { id } = this.props.match.params;
+    request.post('/follow/delFollow').send({ question: id }).then(res => {
+      if (res.body.sucMsg) {
+        const { data } = this.state;
+        data.follow = data.follow - 1;
+        data.isFollow = 0;
+        this.setState({ data });
+      } else {
+        message.error(res.body.errMsg);
+      }
+    });
+  }
+
   back() {
     this.props.history.goBack();
+  }
+
+  open() {
+    this.setState({ visible: true });
+  }
+
+  close() {
+    this.form && this.form.resetFields();
+    this.setState({ visible: false });
   }
 
   renderItem(item) {
@@ -47,13 +99,19 @@ class QuestionDetail extends Component {
           <Avatar src={item.photo} size="small" />
           <div className="autherName" >{item.name}</div>
         </div>
+        <div className="reply-content" >{item.content}</div>
+        <div className="detail-info" >
+          <span>{`0赞同`}</span>
+          <span>{`0评论`}</span>
+          <span>{moment(item.date).fromNow()}</span>
+        </div>
       </List.Item>
     );
   }
 
   render() {
-  	const { loading, data, title, reply } = this.state;
-    const { discription } = data;
+  	const { loading, visible, data, title, reply } = this.state;
+    const { discription, follow, isFollow } = data;
 
     return (
     	<div  className="detail-ctn" >
@@ -67,20 +125,27 @@ class QuestionDetail extends Component {
         <div className="discription-wrp" >
           <div>{discription}</div>
           <div className="detail-info" >
-            <span>{`0人关注`}</span>
+            <span>{`${follow}人关注`}</span>
             <span>{`${reply.length}个回答`}</span>
           </div>
           <Row className="detail-btn-ctn" >
             <Col span={11} >
-              <Button type="primary" icon="plus" >关注问题</Button>
+              { isFollow === 0 ?
+                <Button type="primary" icon="plus" onClick={this.followQuestion.bind(this)} >关注问题</Button>
+                :
+                <Button type="primary" icon="minus" onClick={this.cancelFollow.bind(this)} >取消关注</Button>
+              }
             </Col>
             <Col offset={2} span={11} >
-              <Button type="primary" icon="edit" >添加回答</Button>
+              <Button type="primary" icon="edit" onClick={this.open.bind(this)} >添加回答</Button>
             </Col>
           </Row> 
         </div>
           <List itemLayout="vertical" pagination={false} dataSource={reply} renderItem={this.renderItem.bind(this)} />
         </Spin>
+        <Modal title="撰写回答" visible={visible} footer={null} onCancel={this.close.bind(this)} >
+          <ReplyForm ref={ ref => { this.form = ref; }} onReply={this.onReply.bind(this)} />
+        </Modal>
       </div>
     );
   }
