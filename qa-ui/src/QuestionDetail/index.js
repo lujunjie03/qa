@@ -19,6 +19,7 @@ class QuestionDetail extends Component {
   }
 
 	componentDidMount() {
+    console.log(this.props)
 		this.onSearch();
 	}
 
@@ -101,8 +102,8 @@ class QuestionDetail extends Component {
         </div>
         <div className="reply-content" >{item.content}</div>
         <div className="detail-info" >
-          <span>{`0赞同`}</span>
-          <span>{`0评论`}</span>
+          <span>{`${(item.upvote>>> 0).toLocaleString()}赞同`}</span>
+          <span>{`${(item.comment >>> 0).toLocaleString()}评论`}</span>
           <span>{moment(item.date).fromNow()}</span>
         </div>
       </List.Item>
@@ -125,8 +126,8 @@ class QuestionDetail extends Component {
         <div className="discription-wrp" >
           <div>{discription}</div>
           <div className="detail-info" >
-            <span>{`${follow}人关注`}</span>
-            <span>{`${reply.length}个回答`}</span>
+            <span>{`${(follow >>> 0).toLocaleString()}人关注`}</span>
+            <span>{`${(reply.length).toLocaleString()}个回答`}</span>
           </div>
           <Row className="detail-btn-ctn" >
             <Col span={11} >

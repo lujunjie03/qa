@@ -14,6 +14,7 @@ class Question extends Component {
 	}
 
 	componentDidMount() {
+    console.log(this.props)
 		this.onSearch('');
 	}
 

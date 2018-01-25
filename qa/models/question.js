@@ -4,7 +4,7 @@ const QuestionSQL = {
 	add: 'INSERT INTO question(title,discription,asker) VALUES(?,?,?)',
 	getQuestion: 'SELECT title,discription,asker,name,photo,question.id FROM question LEFT JOIN user ON question.asker=user.id WHERE title LIKE ?',
 	getQuestionByUserId: 'SELECT title,discription,asker,name,photo,question.id FROM question LEFT JOIN user ON question.asker=user.id WHERE asker=?',
-	getQuestionById: 'SELECT title,discription,asker,name,photo,question.id,(SELECT COUNT(*) FROM follow WHERE question=?) AS follow,(SELECT COUNT(*) FROM follow WHERE question=? AND user=? ) AS isFollow FROM question LEFT JOIN user ON question.asker=user.id WHERE question.id=?; SELECT reply.id,content,date,name,photo from reply LEFT JOIN user ON reply.answer=user.id WHERE question=?',
+	getQuestionById: 'SELECT title,discription,asker,name,photo,question.id,(SELECT COUNT(*) FROM follow WHERE question=?) AS follow,(SELECT COUNT(*) FROM follow WHERE question=? AND user=? ) AS isFollow FROM question LEFT JOIN user ON question.asker=user.id WHERE question.id=?;SELECT reply.id,content,date,name,photo,upvote,comment  FROM user,reply LEFT JOIN (SELECT reply,COUNT(*) AS upvote FROM upvote GROUP BY reply) upvote ON upvote.reply=reply.id LEFT JOIN (SELECT reply,COUNT(*) AS comment FROM comment GROUP BY reply) comment ON comment.reply=reply.id WHERE answer=user.id AND question=?',
 };
 
 module.exports = {
