@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { Button, Input, List, Modal, message, Spin, Avatar, Icon, Row, Col } from 'antd';
 import request from 'superagent';
 import moment from 'moment';
+import { connect } from 'react-redux';
+import {bindActionCreators} from 'redux';
 
 import QuestionForm from './QuestionForm';
+import { createHome } from '../../reducers/home';
 
 moment.locale('zh-cn');         // zh-cn
 
@@ -19,11 +22,16 @@ class Home extends Component {
   state = {
     visible: false,
     loading: false,
-    data: [],
+    keyword: '',
   }
 
   componentDidMount() {
-    this.onSearch('');
+    const { data, keyword } = this.props;
+    if (data) {
+      this.setState({ keyword });
+    } else {
+      this.onSearch('');
+    } 
   }
 
   onSearch(value) {
@@ -31,7 +39,8 @@ class Home extends Component {
     request.post('reply/getReply').send({ title: value }).then(res => {
       if (res.body.sucMsg) {
         const { data } = res.body;
-        this.setState({ loading: false, data });
+        this.setState({ loading: false });
+        this.props.createHome({ data, keyword: value });
       } else {
         message.error(res.body.errMsg);
         this.setState({ loading: false });
@@ -57,6 +66,11 @@ class Home extends Component {
   closeModal() {
     this.form && this.form.resetFields();
     this.setState({ visible: false });
+  }
+
+  edit(e) {
+    const keyword = e.target.value;
+    this.setState({ keyword });
   }
 
   renderTitle() {
@@ -89,7 +103,8 @@ class Home extends Component {
   }
 
   render() {
-    const { visible, loading, data } = this.state;
+    const { visible, loading, keyword } = this.state;
+    const { data = [] } = this.props;
 
     const title = this.renderTitle();
 
@@ -97,7 +112,7 @@ class Home extends Component {
       <div className="home" >
         <Row className="searchBar" >
           <Col span={19} >
-            <Search placeholder="搜索你感兴趣的内容..." onSearch={this.onSearch.bind(this)} enterButton />
+            <Search value={keyword} onChange={this.edit.bind(this)} placeholder="搜索你感兴趣的内容..." onSearch={this.onSearch.bind(this)} enterButton />
           </Col>
           <Col span={4} offset={1} >
             <Button type="primary" onClick={this.openModal.bind(this)} >提问</Button>
@@ -116,4 +131,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default connect(state => ({ ...state.home }), (dispatch) => bindActionCreators({ createHome }, dispatch))(Home);

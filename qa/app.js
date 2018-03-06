@@ -11,6 +11,8 @@ var users = require('./routes/users');
 var question = require('./routes/question');
 var reply = require('./routes/reply');
 var follow = require('./routes/follow');
+var collection = require('./routes/collection');
+var upvote = require('./routes/upvote');
 
 var app = express();
 
@@ -40,6 +42,8 @@ app.use('/users', users);
 app.use('/question', question);
 app.use('/reply', reply);
 app.use('/follow', follow);
+app.use('/collection', collection);
+app.use('/upvote', upvote);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

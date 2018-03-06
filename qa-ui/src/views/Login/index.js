@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Modal, Tabs, message } from 'antd';
 import request from 'superagent';
-import logo from '../images/blackbg.png';
 
+import logo from '../../images/blackbg.png';
 import { LOGIN, REGISTER } from './constants';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';

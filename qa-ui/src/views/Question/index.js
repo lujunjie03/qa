@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Input, message, Modal, List, Avatar, Spin, Row, Col } from 'antd';
 import request from 'superagent';
+import { connect } from 'react-redux';
+import {bindActionCreators} from 'redux';
 
 import QuestionForm from '../Home/QuestionForm';
+import { createQuestion } from '../../reducers/question';
 
 const Search = Input.Search;
 
@@ -10,12 +13,16 @@ class Question extends Component {
 	state = {
 		visible: false,
 		loading: false,
-		data: [],
+    keyword: '',
 	}
 
 	componentDidMount() {
-    console.log(this.props)
-		this.onSearch('');
+    const { data, keyword } = this.props;
+    if (data) {
+      this.setState({ keyword });
+    } else {
+      this.onSearch('');
+    }
 	}
 
   onSearch(value) {
@@ -23,7 +30,8 @@ class Question extends Component {
     request.post('question/getQuestion').send({ title: value }).then(res => {
       if (res.body.sucMsg) {
         const { data } = res.body;
-        this.setState({ loading: false, data });
+        this.setState({ loading: false });
+        this.props.createQuestion({ data, keyword: value });
       } else {
         message.error(res.body.errMsg);
         this.setState({ loading: false });
@@ -35,7 +43,9 @@ class Question extends Component {
     request.post('question/addQuestion').send(data).then(res => {
       if (res.body.sucMsg) {
         message.success(res.body.sucMsg);
+        this.onSearch('');
         this.closeModal();
+
       } else {
         message.error(res.body.errMsg);
       }
@@ -53,6 +63,11 @@ class Question extends Component {
 
   goQuestionDetail(item) {
     this.props.history.push(`/question/${item.id}/${item.title}`);
+  }
+
+  edit(e) {
+    const keyword = e.target.value;
+    this.setState({ keyword });
   }
 
   renderTitle() {
@@ -79,14 +94,15 @@ class Question extends Component {
   }
 
   render() {
-  	const { visible, loading, data } = this.state;
+  	const { visible, loading, keyword } = this.state;
+    const { data = [] } = this.props;
   	const title = this.renderTitle();
 
     return (
     	<div className="home" >
         <Row className="searchBar" >
         	<Col span={19} >
-        		<Search placeholder="搜索你感兴趣的内容..." onSearch={this.onSearch.bind(this)} enterButton />
+        		<Search value={keyword} onChange={this.edit.bind(this)} placeholder="搜索你感兴趣的内容..." onSearch={this.onSearch.bind(this)} enterButton />
         	</Col>
         	<Col span={4} offset={1} >
         		<Button type="primary" onClick={this.openModal.bind(this)} >提问</Button>
@@ -105,4 +121,4 @@ class Question extends Component {
   }
 }
 
-export default Question;
+export default connect(state => ({ ...state.question }), (dispatch) => bindActionCreators({ createQuestion }, dispatch))(Question);

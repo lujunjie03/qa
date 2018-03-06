@@ -30,8 +30,9 @@ var connection = initializeConnection({
 	user: 'root',
 	password: '123456',
 	port: '3306',
-	database: 'microblog',
+	database: 'qa',
     multipleStatements: true,
+    useConnectionPooling: true,
 });
 
 module.exports = connection;

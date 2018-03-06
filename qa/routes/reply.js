@@ -22,4 +22,11 @@ router.post('/addReply', (req, res, next) => {
 	});
 });
 
+router.post('/getReplyById', (req, res, next) => {
+	const user = req.session.user.id;
+	Reply.getReplyById({ ...req.body, user }, (result) => {
+		res.status(200).json(result);
+	})
+});
+
 module.exports = router;
