@@ -13,6 +13,8 @@ var reply = require('./routes/reply');
 var follow = require('./routes/follow');
 var collection = require('./routes/collection');
 var upvote = require('./routes/upvote');
+var comment = require('./routes/comment');
+var message = require('./routes/message');
 
 var app = express();
 
@@ -44,6 +46,8 @@ app.use('/reply', reply);
 app.use('/follow', follow);
 app.use('/collection', collection);
 app.use('/upvote', upvote);
+app.use('/comment', comment);
+app.use('/message', message);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

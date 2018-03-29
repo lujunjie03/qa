@@ -28,4 +28,9 @@ router.post('/register', (req, res, next) => {
 	});
 });
 
+router.post('/logout', (req, res, next) => {
+	req.session.user = undefined;
+	res.status(200).json({ back: '登出!' });
+});
+
 module.exports = router;

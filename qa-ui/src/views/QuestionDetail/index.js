@@ -31,6 +31,11 @@ class QuestionDetail extends Component {
     const { id } = this.props.match.params;
     this.setState({ loading: true });
     request.post('/question/getQuestionById').send({ id }).then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+
       if (res.body.sucMsg) {
         const { data } = res.body;
         const { reply } = data;
@@ -46,6 +51,11 @@ class QuestionDetail extends Component {
   onReply(data) {
     const { id } = this.props.match.params;
     request.post('/reply/addReply').send({ ...data, question: id }).then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+
       if (res.body.sucMsg) {
         message.success(res.body.sucMsg);
         this.onSearch();
@@ -59,6 +69,11 @@ class QuestionDetail extends Component {
   followQuestion() {
     const { id } = this.props.match.params;
     request.post('/follow/addFollow').send({ question: id }).then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+
       if (res.body.sucMsg) {
         this.props.follow();
       } else {
@@ -70,6 +85,11 @@ class QuestionDetail extends Component {
   cancelFollow() {
     const { id } = this.props.match.params;
     request.post('/follow/delFollow').send({ question: id }).then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+      
       if (res.body.sucMsg) {
         this.props.cancel();
       } else {

@@ -11,12 +11,6 @@ import { createHome } from '../../reducers/home';
 moment.locale('zh-cn');         // zh-cn
 
 const Search = Input.Search;
-const IconText = ({ type, text }) => (
-  <span>
-    <Icon type={type} style={{ marginRight: 8 }} />
-    {text}
-  </span>
-);
 
 class Home extends Component {
   state = {
@@ -37,6 +31,11 @@ class Home extends Component {
   onSearch(value) {
     this.setState({ loading: true });
     request.post('reply/getReply').send({ title: value }).then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+
       if (res.body.sucMsg) {
         const { data } = res.body;
         this.setState({ loading: false });
@@ -50,6 +49,11 @@ class Home extends Component {
 
   onQuestion(data) {
     request.post('question/addQuestion').send(data).then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+      
       if (res.body.sucMsg) {
         message.success(res.body.sucMsg);
         this.closeModal();
@@ -73,6 +77,14 @@ class Home extends Component {
     this.setState({ keyword });
   }
 
+  goQuestionDetail(item) {
+    this.props.history.push(`/question/${item.question}/${item.title}`);
+  }
+
+  goReplyDetail(item) {
+    this.props.history.push(`/reply/${item.id}/${item.title}`);
+  }
+
   renderTitle() {
     return (
       <div className="questionTitle" >
@@ -83,21 +95,20 @@ class Home extends Component {
   }
 
   renderItem(item) {
-    const actions = [
-      <IconText type="star-o" text="156" />,
-      <IconText type="like-o" text="156" />,
-      <IconText type="message" text="2" />
-    ];
 
     return (
-      <List.Item className="listItem" key={item.id} actions={actions} >
-        <p className="listTitle" >{item.title}</p>
+      <List.Item className="listItem" key={item.id}>
+        <p className="listTitle" onClick={this.goQuestionDetail.bind(this, item)} >{item.title}</p>
         <div>
           <Avatar src={item.photo} size="small" />
           <div className="autherName" >{item.name}</div>
           <div className="date" >{`回答于${moment(item.date).fromNow()}`}</div>
         </div>
-        {item.content}
+        <div className="reply-content" onClick={this.goReplyDetail.bind(this, item)} >{item.content}</div>
+        <div className="detail-info" >
+          <span>{`${item.upvote>>> 0} 赞同`}</span>
+          <span>{`${item.comment>>> 0} 评论`}</span>
+        </div>
       </List.Item>
     );
   }

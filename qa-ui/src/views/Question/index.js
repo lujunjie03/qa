@@ -28,6 +28,11 @@ class Question extends Component {
   onSearch(value) {
     this.setState({ loading: true });
     request.post('question/getQuestion').send({ title: value }).then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+
       if (res.body.sucMsg) {
         const { data } = res.body;
         this.setState({ loading: false });
@@ -41,6 +46,11 @@ class Question extends Component {
 
   onQuestion(data) {
     request.post('question/addQuestion').send(data).then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+      
       if (res.body.sucMsg) {
         message.success(res.body.sucMsg);
         this.onSearch('');
@@ -88,6 +98,10 @@ class Question extends Component {
           <Avatar className="autherPhoto" src={item.photo} size="small" />
           <div className="autherName" >{`${item.name}：`}</div>
           {item.discription}
+        </div>
+        <div className="detail-info" >
+          <span>{`${item.reply>>> 0}个回答`}</span>
+          <span>{`${item.follow>>> 0}人关注`}</span>
         </div>
       </List.Item>
     );

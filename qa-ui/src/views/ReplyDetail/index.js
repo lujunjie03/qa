@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { message, List, Icon, Spin, Row, Col, Button, Avatar, Modal, Input } from 'antd';
 import request from 'superagent';
 import moment from 'moment';
+import { connect } from 'react-redux';
 
 const { TextArea } = Input;
 
@@ -17,7 +18,7 @@ class ReplyDetail extends Component {
 
 	componentWillMount() {
 		const { title } = this.props.match.params;
-		this.setState({ title });
+		this.setState({ title, loading: true });
 	}
 
 	componentDidMount() {
@@ -27,6 +28,11 @@ class ReplyDetail extends Component {
   	onSearch() {
 	    const { id } = this.props.match.params;
 	    request.post('/reply/getReplyById').send({ id }).then(res => {
+	    	if (res.body.back) {
+	    		const backUrl = this.props.location.pathname;
+	    		this.props.history.push('/login', backUrl);
+	    	}
+
 			if (res.body.sucMsg) {
 				const { data } = res.body;
 				const { comment } = data;
@@ -40,6 +46,111 @@ class ReplyDetail extends Component {
 
 	onComment() {
 		this.setState({ commenting: true });
+		const { id } = this.props.match.params;
+		const { value } = this.state;
+		request.post('/comment/addComment').send({ reply: id, content: value }).then(res => {
+			if (res.body.back) {
+	    		const backUrl = this.props.location.pathname;
+	    		this.props.history.push('/login', backUrl);
+	    	}
+
+			if (res.body.sucMsg) {
+				this.onSearch();
+				this.setState({ commenting: false, value: '' });
+			} else {
+				message.error(res.body.errMsg);
+				this.setState({ commenting: false });
+			}
+	    });
+	}
+
+	deleteComment(item) {
+		request.post('/comment/delComment').send({ id: item.id }).then(res => {
+			if (res.body.back) {
+	    		const backUrl = this.props.location.pathname;
+	    		this.props.history.push('/login', backUrl);
+	    	}
+
+			if (res.body.sucMsg) {
+				this.onSearch();
+			} else {
+				message.error(res.body.errMsg);
+			}
+	    });
+	}
+
+	cancelUpvote() {
+		const { id } = this.props.match.params;
+		request.post('/upvote/delUpvote').send({ reply: id }).then(res => {
+			if (res.body.back) {
+	    		const backUrl = this.props.location.pathname;
+	    		this.props.history.push('/login', backUrl);
+	    	}
+
+			if (res.body.sucMsg) {
+				const { data } = this.state;
+				let { upvote, isUpvote } = data;
+				upvote = upvote - 1;
+				isUpvote = 0;
+				this.setState({ data: { ...data, upvote, isUpvote } });
+			} else {
+				message.error(res.body.errMsg);
+			}
+	    });
+	}
+
+	onUpvote() {
+		const { id } = this.props.match.params;
+		request.post('/upvote/addUpvote').send({ reply: id }).then(res => {
+			if (res.body.back) {
+	    		const backUrl = this.props.location.pathname;
+	    		this.props.history.push('/login', backUrl);
+	    	}
+
+			if (res.body.sucMsg) {
+				const { data } = this.state;
+				let { upvote, isUpvote } = data;
+				upvote = upvote + 1;
+				isUpvote = 1;
+				this.setState({ data: { ...data, upvote, isUpvote } });
+			} else {
+				message.error(res.body.errMsg);
+			}
+	    });
+	}
+
+	onCollect() {
+		const { id } = this.props.match.params;
+		request.post('/collection/addCollection').send({ reply: id }).then(res => {
+			if (res.body.back) {
+	    		const backUrl = this.props.location.pathname;
+	    		this.props.history.push('/login', backUrl);
+	    	}
+
+			if (res.body.sucMsg) {
+				const { data } = this.state;
+				this.setState({ data: { ...data, isCollect: 1 } });
+			} else {
+				message.error(res.body.errMsg);
+			}
+	    });
+	}
+
+	cancelCollect() {
+		const { id } = this.props.match.params;
+		request.post('/collection/delCollection').send({ reply: id }).then(res => {
+			if (res.body.back) {
+	    		const backUrl = this.props.location.pathname;
+	    		this.props.history.push('/login', backUrl);
+	    	}
+			
+			if (res.body.sucMsg) {
+				const { data } = this.state;
+				this.setState({ data: { ...data, isCollect: 0 } });
+			} else {
+				message.error(res.body.errMsg);
+			}
+	    });
 	}
 
 	back() {
@@ -71,6 +182,11 @@ class ReplyDetail extends Component {
 						<div className="comment-ctn" >{item.content}</div>
 						<div className="detail-info" >
 							<span>{moment(item.date).fromNow()}</span>
+							{
+								this.props.user.id === item.commentor 
+								&&
+								<span onClick={this.deleteComment.bind(this, item)} >删除</span>
+							}
 						</div>
 					</Col>
 				</Row>
@@ -120,13 +236,14 @@ class ReplyDetail extends Component {
         				{
         					isUpvote
         					?
-        					<div className="like footerBtn-active" >
+        					<div className="like footerBtn-active" onClick={this.cancelUpvote.bind(this)} >
         						<Icon className="footerBtn" type="like" />
         						&nbsp;&nbsp;
+        						{upvote}
         					</div>
         					:
         					<div className="like" >
-        						<Icon className="footerBtn" type="like-o" />
+        						<Icon className="footerBtn" type="like-o" onClick={this.onUpvote.bind(this)} />
         						&nbsp;&nbsp;
         						{upvote}
         					</div>
@@ -136,12 +253,12 @@ class ReplyDetail extends Component {
         				{
         					isCollect
         					?
-        					<div className="footerBtnCtn footerBtn-active" >
+        					<div className="footerBtnCtn footerBtn-active" onClick={this.cancelCollect.bind(this)} >
 			        			<Icon className="footerBtn" type="star" />
 			        			<p>收 藏</p>
 			        		</div>
         					:
-        					<div className="footerBtnCtn" >
+        					<div className="footerBtnCtn" onClick={this.onCollect.bind(this)} >
 			        			<Icon className="footerBtn" type="star-o" />
 			        			<p>收 藏</p>
 			        		</div>
@@ -160,4 +277,4 @@ class ReplyDetail extends Component {
 
 }
 
-export default ReplyDetail;
+export default connect(state => ({ user: state.user }))(ReplyDetail);

@@ -1,8 +1,10 @@
 const connection = require('../models/connection');
 
 const UserSQL = {
-	register: 'INSERT INTO user(number,name,password) VALUES(?,?,?)',
-	login: 'SELECT id,name,photo FROM user WHERE number = ? AND password = ?',
+	register: `INSERT INTO user(number,name,password) VALUES(?,?,?)`,
+	login: `SELECT id,name,photo 
+			FROM user 
+			WHERE number = ? AND password = ?`,
 };
 
 module.exports = {

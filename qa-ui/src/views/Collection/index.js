@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { message, List, Icon, Spin, Row, Col } from 'antd';
+import { message, List, Icon, Spin, Row, Col, Avatar } from 'antd';
 import request from 'superagent';
 
 class Collection extends Component {
@@ -14,7 +14,12 @@ class Collection extends Component {
 
   onSearch() {
     this.setState({ loading: true });
-    request.post('reply/getReplyByUserId').send().then(res => {
+    request.post('reply/getCollectReply').send().then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+
       if (res.body.sucMsg) {
         const { data } = res.body;
         this.setState({ loading: false, data });
@@ -29,13 +34,29 @@ class Collection extends Component {
     this.props.history.goBack();
   }
 
+  goQuestionDetail(item) {
+    this.props.history.push(`/question/${item.question}/${item.title}`);
+  }
+
+  goReplyDetail(item) {
+    this.props.history.push(`/reply/${item.id}/${item.title}`);
+  }  
+
   renderItem(item) {
 
     return (
       <List.Item className="listItem" key={item.id} >
-        <div className="listTitle" >{item.title}</div>
-        <div className="itemCtn" >
+        <div className="first-avatar" >
+          <Avatar src={item.photo} size="small" />
+          <div className="autherName" >{item.name}</div>
+        </div>
+        <div className="listTitle" onClick={this.goQuestionDetail.bind(this, item)} >{item.title}</div>
+        <div className="reply-content" onClick={this.goReplyDetail.bind(this, item)} >
           {item.content}
+        </div>
+        <div className="detail-info" >
+          <span>{`${item.upvote>>> 0} 赞同`}</span>
+          <span>{`${item.comment>>> 0} 评论`}</span>
         </div>
       </List.Item>
     );
@@ -45,8 +66,8 @@ class Collection extends Component {
   	const { loading, data } = this.state;
 
     return (
-    	<div>
-        <Row className="titleBar" >
+    	<div className="detail-ctn" >
+        <Row className="titleBar title-fixed" >
           <Col onClick={this.back.bind(this)} span={4}>
             <Icon className="back-btn" type="arrow-left" />
           </Col>
@@ -54,7 +75,7 @@ class Collection extends Component {
             {'我的收藏'}
           </Col>
         </Row>
-        <div>
+        <div className='question-ctn' >
           <Spin spinning={loading} >
             <List itemLayout="vertical" pagination={false} dataSource={data} renderItem={this.renderItem.bind(this)} />
           </Spin>

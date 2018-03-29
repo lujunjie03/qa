@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Button, Modal, Tabs, message } from 'antd';
 import request from 'superagent';
+import { connect } from 'react-redux';
+import {bindActionCreators} from 'redux';
 
 import logo from '../../images/blackbg.png';
 import { LOGIN, REGISTER } from './constants';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
+import { saveUser } from '../../reducers/user';
 
 const TabPane = Tabs.TabPane;
 
@@ -18,7 +21,17 @@ class Login extends Component {
 	onLogin(data) {
 		request.post('users/login').send(data).then(res => {
 			if (res.body.sucMsg) {
-        this.props.history.push('/home', res.body.data);
+        const url = this.props.location.state;
+        const { data } = res.body;
+
+        this.props.saveUser({ data });
+
+        if (url) {
+          this.props.history.goBack();
+        } 
+
+        this.props.history.push('/');
+
       } else {
         message.error(res.body.errMsg);
       }
@@ -28,7 +41,16 @@ class Login extends Component {
   onRegister(data) {
     request.post('users/register').send(data).then(res => {
       if (res.body.sucMsg) {
-        this.props.history.push('/home', res.body.data);
+        const url = this.props.location.state;
+        const { data } = res.body;
+
+        this.props.saveUser({ data });
+
+        if (url) {
+          this.props.history.goback();
+        }
+
+        this.props.history.push('/');
       } else {
         message.error(res.body.errMsg);
       }
@@ -74,5 +96,4 @@ class Login extends Component {
 }
 
 
-
-export default Login;
+export default connect(state => ({}), (dispatch) => bindActionCreators({ saveUser }, dispatch))(Login);

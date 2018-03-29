@@ -4,12 +4,6 @@ import { withRouter } from "react-router-dom";
 
 class Footer extends Component {
 
-	componentWillMount() {
-		if (!this.props.location.state) {
-      this.props.history.push('/login');
-    }    
-	}
-
 	go(path) {
 		const { state } = this.props.location;
 		this.props.history.push(path, state)
@@ -22,7 +16,7 @@ class Footer extends Component {
       	{ this.props.children}
         <Row className="footer">
         	<Col span={8}>
-        		<div onClick={this.go.bind(this, '/home')} className={`footerBtnCtn ${ pathname === '/home' ? 'footerBtn-active' : '' }`} >
+        		<div onClick={this.go.bind(this, '/')} className={`footerBtnCtn ${ pathname === '/' ? 'footerBtn-active' : '' }`} >
 	        		<Icon className="footerBtn" type="home" />
 	        		<p>首 页</p>
         		</div>

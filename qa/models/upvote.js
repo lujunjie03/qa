@@ -1,8 +1,9 @@
 const connection = require('../models/connection');
 
 const UpvoteSQL = {
-	add: 'INSERT INTO upvote(reply, user) VALUES(?,?)',
-	del: 'DELETE FROM upvote WHERE reply=? AND user=?',
+	add: `INSERT INTO upvote(reply, user) VALUES(?,?)`,
+	del: `DELETE FROM upvote 
+		  WHERE reply=? AND user=?`,
 };
 
 module.exports = {

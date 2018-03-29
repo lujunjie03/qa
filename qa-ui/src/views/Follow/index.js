@@ -14,7 +14,12 @@ class Follow extends Component {
 
   onSearch() {
     this.setState({ loading: true });
-    request.post('question/getQuestionByUserId').send().then(res => {
+    request.post('question/getFollowQuestion').send().then(res => {
+      if (res.body.back) {
+        const backUrl = this.props.location.pathname;
+        this.props.history.push('/login', backUrl);
+      }
+
       if (res.body.sucMsg) {
         const { data } = res.body;
         this.setState({ loading: false, data });
@@ -29,24 +34,32 @@ class Follow extends Component {
     this.props.history.goBack();
   }
 
+  goQuestionDetail(item) {
+    this.props.history.push(`/question/${item.id}/${item.title}`);
+  }
+
   renderItem(item) {
 
     return (
-      <List.Item className="listItem" key={item.id} >
+      <List.Item className="listItem" key={item.id} onClick={this.goQuestionDetail.bind(this, item)} >
         <div className="listTitle" >{item.title}</div>
         <div className="itemCtn" >
           {item.discription}
+        </div>
+        <div className="detail-info" >
+          <span>{`${item.reply>>>0}个回答`}</span>
+          <span>{`${item.follow>>>0}人关注`}</span>
         </div>
       </List.Item>
     );
   }
 
   render() {
-  	const { loading, data } = this.state;
+  	const { loading, data=[] } = this.state;
 
     return (
-    	<div>
-        <Row className="titleBar" >
+    	<div className="detail-ctn" >
+        <Row className="titleBar title-fixed" >
           <Col onClick={this.back.bind(this)} span={4}>
             <Icon className="back-btn" type="arrow-left" />
           </Col>
@@ -54,7 +67,7 @@ class Follow extends Component {
             {'我的关注'}
           </Col>
         </Row>
-        <div>
+        <div className='question-ctn' >
           <Spin spinning={loading} >
             <List itemLayout="vertical" pagination={false} dataSource={data} renderItem={this.renderItem.bind(this)} />
           </Spin>
